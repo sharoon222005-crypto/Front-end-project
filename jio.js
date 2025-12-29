@@ -1,3 +1,3 @@
-const apple = "red"
+const apple = "red";
 
-console.log(`my fruit color is ${apple}`)
+console.log(`my fruit color is ${apple}`);
