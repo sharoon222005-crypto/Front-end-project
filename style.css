@@ -735,6 +735,21 @@
     color: white;
     
      }
+/* Remove all horizontal overflow */
+html, body {
+    overflow-x: hidden !important;
+}
+
+/* Responsive images */
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Prevent navbar and other flex rows from overflowing */
+.row, .container, .navbar, .navbar-nav {
+    flex-wrap: wrap !important;
+}
 
 
 
