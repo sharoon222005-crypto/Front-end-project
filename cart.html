@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top custom-navbar shadow-sm">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">
+      <img src="logo 3.png" alt="logo" width="60">
+    </a>
+  </div>
+</nav>
+
+<section class="container my-5">
+    <h2>Your Cart</h2>
+    <table class="table table-bordered text-center">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody id="cart-items"></tbody>
+    </table>
+
+    <div class="d-flex justify-content-end">
+        <h4>Total: ₹<span id="cart-total">0</span></h4>
+    </div>
+
+    <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-success" id="checkout-btn">Checkout</button>
+    </div>
+</section>
+
+<script>
+// Retrieve cart from localStorage
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+// DOM elements
+const cartItems = document.getElementById("cart-items");
+const cartTotal = document.getElementById("cart-total");
+
+// Display cart function
+function displayCart() {
+    cartItems.innerHTML = "";
+    let total = 0;
+
+    cart.forEach((item, index) => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        cartItems.innerHTML += `
+            <tr>
+                <td>
+                    <img src="${item.img}" width="50" alt="">
+                    <span>${item.name}</span>
+                </td>
+                <td>₹${item.price}</td>
+                <td>
+                    <input type="number" min="1" max="5" value="${item.quantity}" data-index="${index}" class="qty-input">
+                </td>
+                <td>₹${subtotal}</td>
+                <td><button class="btn btn-danger remove-btn" data-index="${index}"><i class="bi bi-trash"></i></button></td>
+            </tr>
+        `;
+    });
+
+    cartTotal.innerText = total;
+    addEvents();
+}
+
+// Add event listeners for quantity and remove buttons
+function addEvents() {
+    const qtyInputs = document.querySelectorAll(".qty-input");
+    const removeBtns = document.querySelectorAll(".remove-btn");
+
+    qtyInputs.forEach(input => {
+        input.addEventListener("change", (e) => {
+            const index = e.target.dataset.index;
+            let value = parseInt(e.target.value);
+            if(value < 1) value = 1;
+            if(value > 5) value = 5;
+            cart[index].quantity = value;
+            localStorage.setItem("cart", JSON.stringify(cart));
+            displayCart();
+        });
+    });
+
+    removeBtns.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            const index = e.target.closest("button").dataset.index;
+            cart.splice(index, 1);
+            localStorage.setItem("cart", JSON.stringify(cart));
+            displayCart();
+        });
+    });
+}
+
+// Checkout button
+document.getElementById("checkout-btn").addEventListener("click", () => {
+    if(cart.length === 0){
+        alert("Your cart is empty!");
+    } else {
+        alert(`Total amount: ₹${cart.reduce((sum, item) => sum + item.price * item.quantity, 0)}\nProceeding to checkout...`);
+        // You can redirect to a real checkout page here
+        // window.location.href = "checkout.html";
+    }
+});
+
+// Initial display
+displayCart();
+</script>
+
+</body>
+</html>
