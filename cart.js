@@ -1,62 +1,53 @@
-// Simulated cart storage (normally this could be localStorage)
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+   const cartBtns = document.querySelectorAll(".cart-btn");
 
-// DOM elements
-const cartItems = document.getElementById("cart-items");
-const cartTotal = document.getElementById("cart-total");
+    // Loop each button
+    cartBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
 
-// Function to display cart
-function displayCart() {
-    cartItems.innerHTML = ""; // clear table
-    let total = 0;
+        const card = btn.closest(".product-card");
+        const name = card.querySelector(".card-title").innerText;
+        const img = card.querySelector("img").src;
+        const price = parseInt(
+          card.querySelector(".text-success").innerText.replace("₹", "").replace(",", "")
+        );
 
-    cart.forEach((item, index) => {
-        let subtotal = item.price * item.quantity;
-        total += subtotal;
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-        cartItems.innerHTML += `
-            <tr>
-                <td>${item.name}</td>
-                <td>₹${item.price}</td>
-                <td>
-                    <input type="number" min="1" max="5" value="${item.quantity}" data-index="${index}" class="qty-input">
-                </td>
-                <td>₹${subtotal}</td>
-                <td><button class="btn btn-danger remove-btn" data-index="${index}"><i class="bi bi-trash"></i></button></td>
-            </tr>
-        `;
+        const existing = cart.find(item => item.name === name);
+
+        if (existing) {
+          existing.quantity = Math.min(existing.quantity + 1, 100); // max 5
+        } else {
+          cart.push({
+            name: name,
+            price: price,
+            img: img,
+            quantity: 1
+          });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCount();
+      });
     });
 
-    cartTotal.innerText = total;
-    addEvents();
+    function updateCartCount() {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let total = cart.reduce((sum, p) => sum + p.quantity, 0);
+
+      document.getElementById("cart-count").innerText = total;
+    }
+
+    // Update count when page loads
+    updateCartCount();
+
+    function showPopup(message) {
+  const popup = document.getElementById("popup-msg");
+  popup.innerText = message;
+  popup.style.display = "block";
+
+  setTimeout(() => {
+    popup.style.display = "none";
+  }, 1500);  // hide after 1.5 sec
 }
 
-// Function to handle quantity change and remove buttons
-function addEvents() {
-    const qtyInputs = document.querySelectorAll(".qty-input");
-    const removeBtns = document.querySelectorAll(".remove-btn");
-
-    qtyInputs.forEach(input => {
-        input.addEventListener("change", (e) => {
-            const index = e.target.dataset.index;
-            let value = parseInt(e.target.value);
-            if (value < 1) value = 1;
-            if (value > 5) value = 5;
-            cart[index].quantity = value;
-            localStorage.setItem("cart", JSON.stringify(cart));
-            displayCart();
-        });
-    });
-
-    removeBtns.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            const index = e.target.closest("button").dataset.index;
-            cart.splice(index, 1);
-            localStorage.setItem("cart", JSON.stringify(cart));
-            displayCart();
-        });
-    });
-}
-
-// Initial display
-displayCart();
