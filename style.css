@@ -17,6 +17,7 @@
   top: 0 !important;
   z-index: 2000 !important;
   background-color:black;
+  
 }
 
 
@@ -29,6 +30,17 @@
 .navbar-nav .nav-link:hover {
   color: white; /* golden yellow or any highlight color */
 }
+
+.cart-icon.active i {
+  color: white;
+}
+
+.navbar-brand img{
+   height: 70px;
+   width: 100px;
+}
+
+
 
 
 
