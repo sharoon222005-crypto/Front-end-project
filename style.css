@@ -704,30 +704,18 @@
 
   /* contact page details */
 
-#page-header3 {
+       #page-header3 {
     text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-image: url(images/contact-3.jpg);
+    background-image:url(images/contact-3.jpg);
     width: 100%;
-    min-height: 40vh;   /* <-- change from height */
+    height: 40vh;
     background-size: cover;
-    background-position: center;
     color: white;
-    padding: 20px;      /* needed for mobile text */
-}
-
-@media (max-width: 576px) {
-  #page-header3 h1 {
-    font-size: 1.6rem !important;
-  }
-
-  #page-header3 p {
-    font-size: 0.9rem !important;
-  }
-}
-
+    
+     }
 /* Remove all horizontal overflow */
 
 
